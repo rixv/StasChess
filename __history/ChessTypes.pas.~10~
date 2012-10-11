@@ -1,0 +1,57 @@
+unit ChessTypes;
+
+interface
+
+const
+  WHITEPAWN = 1;
+  BLACKPAWN = -1;
+  WHITEKNIGHT = 2;
+  WHITEBISHOP = 3;
+  WHITEROOK = 4;
+  WHITEQUEEN = 5;
+  WHITEKING = 6;
+  BLACKKNIGHT = -2;
+  BLACKBISHOP = -3;
+  BLACKROOK = -4;
+  BLACKQUEEN = -5;
+  BLACKKING = -6;
+
+
+type TBoard = record
+   Cells: array[1..8, 1..8] of Integer;
+end;
+
+type TWBMove = record
+  WhiteFromX: Integer;
+  WhiteFromY: Integer;
+  WhiteToX: Integer;
+  WhiteToY: Integer;
+  BlackFromX: Integer;
+  BlackFromY: Integer;
+  BlackToX: Integer;
+  BlackToY: Integer;
+end;
+
+type TMove = record
+  FromX: Integer;
+  FromY: Integer;
+  ToX: Integer;
+  ToY: Integer;
+  Transform: String[1];
+end;
+
+type TWBMoves = record
+  Count: Integer;
+  WBMove: array[1..1000] of TWBMove;
+end;
+
+type TMoves = record
+  Count: Integer;
+  Move: array[1..100] of TMove;
+end;
+
+
+implementation
+
+end.
+

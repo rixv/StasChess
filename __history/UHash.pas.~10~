@@ -1,0 +1,60 @@
+unit UHash;
+
+interface
+
+  uses ChessTypes, Dialogs, SysUtils;
+
+type THashRecord=record
+  Val: Integer;
+end;
+
+function GetHash(Board: TBoard): Cardinal;
+procedure ClearHash;
+
+var HashTable: array[0..16777216] of THashRecord;
+
+implementation
+
+procedure ClearHash;
+var i: Cardinal;
+begin
+  for i := 0 to 16777216 do
+    HashTable[i].Val := 0;
+end;
+
+function GetHash(Board: TBoard): LongWord;
+var i, j: Integer;
+  Val: LongWord;
+begin
+
+  Val := 1;
+
+  Val := Val xor Board.LastMove.ToX;
+  Val := Val xor Board.LastMove.ToY;
+  Val := Val xor Board.LastMove.FromX;
+  Val := Val xor Board.LastMove.FromY;
+
+  if Board.H1RookMoveW then Val := (Val) xor 1;
+  if Board.A1RookMoveW then Val := (Val) xor 1;
+  if Board.KingMoveW then Val := (Val) xor 1;
+  if Board.H1RookMoveB then Val := (Val) xor 1;
+  if Board.A1RookMoveB then Val := (Val) xor 1;
+  if Board.KingMoveB then Val := (Val) xor 1;
+
+
+  for i := 1 to 8 do
+    for j := 1 to 8 do
+    begin
+      Val := ((Val) xor LongWord((Board.Cells[i, j])*i + 6 + j));
+      Val := Val shl 1;
+    end;
+
+
+    if Val > 16777216 then Val := Val mod 16777216;
+
+  Result := Val;
+end;
+
+
+end.
+

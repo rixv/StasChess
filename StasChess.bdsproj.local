@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2012.08.26 13:00:52.196.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\ChessTypes.pas</Transaction>
+    <Transaction>2012.08.26 13:15:19.127.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\UPossibleMoves.pas</Transaction>
+    <Transaction>2012.08.26 14:36:23.296.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\UIni.pas</Transaction>
+    <Transaction>2012.08.26 16:37:47.400.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\UCI.pas</Transaction>
+    <Transaction>2012.09.15 11:06:01.564.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\FastAsm.pas</Transaction>
+    <Transaction>2012.09.28 00:14:09.011.pas,C:\CHESS\My\Unit1.pas=C:\CHESS\My\UHash.pas</Transaction>
+  </Transactions>
+</BorlandProject>

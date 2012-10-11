@@ -1,0 +1,35 @@
+unit UCI;
+
+interface
+
+function PeekInput: integer;
+
+implementation
+
+
+
+function PeekInput: integer;
+var
+ n,nr,nl: cardinal;
+ i: integer;
+ data: array[0..MAXBUFF-1] of char;
+begin
+  result := 0;
+  if IsConsole then begin
+     GetNumberOfConsoleInputEvents(stih,n);
+     if n > 1 then result := 256;
+     exit;
+  end;
+  PeekNamedPipe(stih,@data,MAXBUFF,@nr,@n,@nl);
+  if nr = 0 then exit;
+  for i := 0 to nr-1 do
+  if (data[i] = #10) or (data[i] = #13) then begin
+     result := i+1;
+     break;
+  end;
+  if nr > MAXBUFF then result := MAXBUFF;
+end;
+
+
+
+end.
