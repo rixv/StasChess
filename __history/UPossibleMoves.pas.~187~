@@ -22,8 +22,6 @@ interface
 
   function HashSort(Board: TBoard; Moves: TMoves): TMoves;
   procedure qSort(var Ar:TMoves; low, high: Integer);
-  function GetEndSpiel(Board: TBoard): Boolean;
-
 implementation
 
 
@@ -108,11 +106,6 @@ begin
             exit;
           end;
           if (t = -3) and (n <> 0) and (m <> 0) then
-          begin
-            Result := True;
-            exit;
-          end;
-          if (t = -6) and (abs(a - i) = 1) and (abs(b-j) = 1)  and ((n <> 0) or (m <> 0)) then
           begin
             Result := True;
             exit;
@@ -611,7 +604,7 @@ begin
     qSort(Result, 1, Result.Count);
   end;
 
-{  if Random(10000) = 5 then
+ { if Random(10) = 5 then
   begin
    SMoves := '';
    for i := 1 to Result.Count do
@@ -621,7 +614,7 @@ begin
 
    ShowMessage(SMoves);
   end;
- }
+  }
 end;
 
 
@@ -629,8 +622,8 @@ function HashSort(Board: TBoard; Moves: TMoves): TMoves;
 var i: Byte;
 begin
   for i := 1 to Moves.Count do
-///  if  Moves.Move[i].Sort < 30 then
-    Moves.Move[i].Sort := Moves.Move[i].Sort + ((HashTable[GetHash(DoMove(Board, Moves.Move[i]))].Val));
+  if  Moves.Move[i].Sort < 30 then
+    Moves.Move[i].Sort := Moves.Move[i].Sort + abs(Round(HashTable[GetHash(DoMove(Board, Moves.Move[i]))].Val));
     Result := Moves;
 end;
 
@@ -934,30 +927,6 @@ begin
 
 end;
 
-
-function GetEndSpiel(Board: TBoard): Boolean;
-var Material, i, j: Word;
-begin
-  Material := 0;
-  for i := 1 to 8 do
-  for j := 1 to 8 do
-  begin
-
-
-      case abs(Board.Cells[i, j]) of
-
-      1: Material := Material + 30;
-      2: Material := Material + 340;
-      3: Material := Material + 340;
-      4: Material := Material + 540;
-      5: Material := Material + 940;
-
-    end;
-
-  end;
-
-  if material < 2700 then Result := True else Result := False;
-end;
 
 
 

@@ -22,7 +22,9 @@ interface
 
   function HashSort(Board: TBoard; Moves: TMoves): TMoves;
   procedure qSort(var Ar:TMoves; low, high: Integer);
-  function GetEndSpiel(Board: TBoard): Boolean;
+
+  var
+    IsEndSpiel: Boolean;
 
 implementation
 
@@ -935,10 +937,9 @@ begin
 end;
 
 
-function GetEndSpiel(Board: TBoard): Boolean;
+procedure SetEndSpiel(Board: TBoard);
 var Material, i, j: Word;
 begin
-  Material := 0;
   for i := 1 to 8 do
   for j := 1 to 8 do
   begin
@@ -956,7 +957,7 @@ begin
 
   end;
 
-  if material < 2700 then Result := True else Result := False;
+  if material < 2600 then IsEndSpiel := True;
 end;
 
 

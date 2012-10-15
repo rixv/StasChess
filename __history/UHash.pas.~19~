@@ -4,8 +4,6 @@ interface
 
   uses ChessTypes, Dialogs, SysUtils;
 
-const HASHSIZE = 100000000;
-
 type THashRecord=record
   Val: Integer;
 end;
@@ -13,18 +11,18 @@ end;
 function GetHash(Board: TBoard): Cardinal;
 procedure ClearHash;
 
-var HashTable: array[0..HASHSIZE] of THashRecord;
+var HashTable: array[0..67772000] of THashRecord;
 
 implementation
 
 procedure ClearHash;
 var i: Cardinal;
 begin
-  for i := 0 to HASHSIZE do
+  for i := 0 to 67772000 do
     HashTable[i].Val := 0;
 end;
 
-function Rol32(Value, Shift: LongWord): LongWord;
+function rol32(Value, Shift: LongWord): LongWord;
 asm
   mov ecx, edx
   rol eax, cl
@@ -61,7 +59,7 @@ begin
    end;
 
 
-    if Val > HASHSIZE then Val := Val mod HASHSIZE;
+    if Val > 67772000 then Val := Val mod 67772000;
 
   Result := Val;
 end;

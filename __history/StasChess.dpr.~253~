@@ -149,6 +149,8 @@ begin
 
       PMoves := PossibleMovesWhite(Board);
 
+      if PMoves.Count < 0 then ShowMessage(IntToStr(PMoves.Count));
+
       if PMoves.Count = 0 then
       begin
         if ThreatToKing(Board, True) then Val := -9000 - Depth else Val := 0;
@@ -207,7 +209,7 @@ begin
           if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 50)
             then riDepth := iDepth - 1 else rDepth := Depth - 1;
 
-            Val := MinMax(CheckBoard, rDepth, riDepth, Alpha, Beta, not CMove).Eval;
+          Val := MinMax(CheckBoard, rDepth, riDepth, Alpha, Beta, not CMove).Eval;
 
           HashTable[Hash].Val := Beta - Val;
 
