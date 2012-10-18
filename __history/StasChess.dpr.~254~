@@ -149,11 +149,9 @@ begin
 
       PMoves := PossibleMovesWhite(Board);
 
-      if PMoves.Count < 0 then ShowMessage(IntToStr(PMoves.Count));
-
       if PMoves.Count = 0 then
       begin
-        if ThreatToKing(Board, True) then Val := -9000 else Val := 0;
+        if ThreatToKing(Board, True) then Val := -9000 - Depth else Val := 0;
         BestVal := Val;
       end
       else
@@ -164,16 +162,19 @@ begin
           CheckBoard := DoMove(Board, PMoves.Move[i]);
           Hash := GetHash(CheckBoard);
 
-          if False and (Depth <> 1) and (i > PMoves.Count / 7.4) then  rDepth :=  1 else rDepth := 0;
+//          if (Depth <> 1) and (i > PMoves.Count / 1.0) then  rDepth :=  1 else rDepth := 0;
 
-          if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 70)
-            then riDepth := iDepth - 1 else rDepth := -rDepth + Depth - 1;
+          if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 50)
+            then riDepth := iDepth - 1 else rDepth := Depth - 1;
 
           Val := MinMax(CheckBoard, rDepth, riDepth, Alpha, Beta, not CMove).Eval;
 
+
+          HashTable[Hash].Val := Val - Alpha;
+
           if Val > Alpha then
           begin
-            HashTable[Hash].Val := Val - Alpha;
+
             Alpha := Val;
             BestVal := Val;
             BestMove := PMoves.Move[i];
@@ -191,7 +192,7 @@ begin
 
       if PMoves.Count = 0 then
       begin
-        if ThreatToKing(Board, False) then Val := 9000 else Val := 0;
+        if ThreatToKing(Board, False) then Val := 9000 + Depth else Val := 0;
         BestVal := Val;
       end
       else
@@ -201,17 +202,17 @@ begin
           CheckBoard := DoMove(Board, PMoves.Move[i]);
           Hash := GetHash(CheckBoard);
 
-          if False and (Depth <> 1) and (i > PMoves.Count / 7.4) then  rDepth :=  1 else rDepth := 0;
+  //        if (Depth <> 1) and (i > PMoves.Count / 1.0) then  rDepth :=  1 else rDepth := 0;
 
-          if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 70)
-            then riDepth := iDepth - 1 else rDepth := -rDepth + Depth - 1;
+          if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 50)
+            then riDepth := iDepth - 1 else rDepth := Depth - 1;
 
-          Val := MinMax(CheckBoard, rDepth, riDepth, Alpha, Beta, not CMove).Eval;
+            Val := MinMax(CheckBoard, rDepth, riDepth, Alpha, Beta, not CMove).Eval;
 
+          HashTable[Hash].Val := Beta - Val;
 
           if Val < Beta then
           begin
-            HashTable[Hash].Val := Beta - Val;
             Beta := Val;
             BestVal := Val;
             BestMove := PMoves.Move[i];
@@ -243,6 +244,7 @@ var
   s, SMoves: String;
   SL: TStringList;
   IsBlack: Boolean;
+  MainDepth: Word;
 begin
 
   ClearHash;
@@ -280,9 +282,14 @@ begin
    begin
 
      HashNodes := 0;
-//     for i := 1 to 3 do
+     ClearHash;
+
+
+     if GetEndSpiel(Board) then MainDepth := 5 else MainDepth := 6;
+
+     for i := 1 to MainDepth do
      begin
-       BestMove := MinMax(Board, 6, 4, -65530, 65530, Board.EngineColor);
+       BestMove := MinMax(Board, i, 3, -65530, 65530, Board.EngineColor);
 
        WriteString('info depth '+IntToStr(i)+' score cp '+ IntToStr(-BestMove.Eval)) ;
        sleep(20);

@@ -301,7 +301,7 @@ begin
 end;
 
 
-function AddMove(var Moves: TMoves; i, j, a, b, iSort: Integer; S: Char): TMoves;
+function AddMove(Moves: TMoves; i, j, a, b, iSort: Integer; S: Char): TMoves;
 begin
   Moves.Count := Moves.Count + 1;
   with Moves.Move[Moves.Count] do
@@ -318,7 +318,7 @@ end;
 
 
 
-function BishopMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
+function BishopMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -359,7 +359,7 @@ end;
 
 
 
-function RookMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
+function RookMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -399,7 +399,7 @@ begin
 end;
 
 
-function QueenMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
+function QueenMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -440,7 +440,7 @@ end;
 
 
 
-function KnightMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
+function KnightMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b: ShortInt;
 begin
     for a := -2 to 2 do
@@ -458,7 +458,7 @@ begin
 end;
 
 
-function PieceMoves(var Moves: TMoves; Board: TBoard; i, j: Byte): TMoves;
+function PieceMoves(Moves: TMoves; Board: TBoard; i, j: Byte): TMoves;
 begin
   if Board.Cells[i, j + 1] = 0 then
   begin
@@ -583,27 +583,33 @@ begin
     begin
 
       case Board.Cells[i, j] of
-      1: Result := PieceMoves(CResult, Board, i, j);
-      2: Result := KnightMoves(CResult, Board, i, j);
-      3: Result := BishopMoves(CResult, Board, i, j);
-      4: Result := RookMoves(CResult, Board, i, j);
-      5: Result := QueenMoves(CResult, Board, i, j);
-      6: Result := KingMoves(CResult, Board, i, j);
+      1: CResult := PieceMoves(CResult, Board, i, j);
+      2: CResult := KnightMoves(CResult, Board, i, j);
+      3: CResult := BishopMoves(CResult, Board, i, j);
+      4: CResult := RookMoves(CResult, Board, i, j);
+      5: CResult := QueenMoves(CResult, Board, i, j);
+      6: CResult := KingMoves(CResult, Board, i, j);
       end;
 
     end;
   end;
+
 
   //if Result.Count > 100 then ShowMessage('Очень много ходов');
 //  for i := 1 to Result.Count do Result.Move[i].Sort := 0;
 
   Result.Count := 0;
   for i := 1 to CResult.Count do
-  if not ThreatToKing(DoMove(Board, Result.Move[i]), True) then
+  if not ThreatToKing(DoMove(Board, CResult.Move[i]), True) then
   begin
     Result.Count := Result.Count + 1;
     Result.Move[Result.Count] := CResult.Move[i];
   end;
+
+
+ //  Result := CResult;
+
+
 
   if Result.Count > 1 then
   begin
@@ -611,7 +617,7 @@ begin
     qSort(Result, 1, Result.Count);
   end;
 
-{  if Random(10000) = 5 then
+  {if Random(100) = 5 then
   begin
    SMoves := '';
    for i := 1 to Result.Count do
@@ -621,7 +627,7 @@ begin
 
    ShowMessage(SMoves);
   end;
- }
+   }
 end;
 
 

@@ -34,7 +34,7 @@ type TMove = record
   Transform: Char;
   Eval: Integer;
   Sort: Integer;
-  Pv: array[0..20] of TEasyMove;
+  Pv: array[1..20] of TEasyMove;
   Depth: Byte;
 end;
 

@@ -17,6 +17,16 @@ const
   BLACKKING = -6;
 
 
+type TMove = record
+  FromX: Byte;
+  FromY: Byte;
+  ToX: Byte;
+  ToY: Byte;
+  Transform: Char;
+  Eval: Integer;
+  Sort: Integer;
+end;
+
 type TBoard = record
    Cells: array[1..8, 1..8] of Integer;
    H1RookMoveW: Boolean;
@@ -25,20 +35,15 @@ type TBoard = record
    H1RookMoveB: Boolean;
    A1RookMoveB: Boolean;
    KingMoveB: Boolean;
+   EngineColor: Boolean;
+   LastMove: TMove;
 end;
 
-type TMove = record
-  FromX: Integer;
-  FromY: Integer;
-  ToX: Integer;
-  ToY: Integer;
-  Transform: String[1];
-end;
 
 
 type TMoves = record
+  Move: array[1..100] of TMove;
   Count: Integer;
-  Move: array[1..1000] of TMove;
 end;
 
 

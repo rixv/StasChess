@@ -4,7 +4,7 @@ interface
 
   uses ChessTypes, Dialogs, SysUtils;
 
-const HASHSIZE = 100000000;
+const HASHSIZE = 10000;
 
 type THashRecord=record
   Val: Integer;
