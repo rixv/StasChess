@@ -164,10 +164,9 @@ begin
 
 //     if GetEndSpiel(Board) then MainDepth := 5 else MainDepth := 6;
 
-     i := 6;
     /// for i := 1 to 6 do
      begin
-       BestMove := MinMax(Board, i, -65530, 65530, iPv, Board.EngineColor);
+       BestMove := MinMax(Board, 6, -65530, 65530, iPv, Board.EngineColor);
 
        WriteString('info depth '+IntToStr(i)+' score cp '+ IntToStr(-BestMove.Eval)) ;
        sleep(20);
@@ -182,10 +181,10 @@ begin
      WriteString('bestmove ' + ConvertMoveTOStr(BestMove));
      SL.Add(ConvertMoveTOStr(BestMove));
 
-     WriteString('info depth ' + IntToStr(i-1) +' nodes '+IntToStr(Nodes)+' score cp '
+ {    WriteString('info depth ' + IntToStr(i-1) +' nodes '+IntToStr(Nodes)+' score cp '
      + IntToStr(-BestMove.Eval)+ ' time 0 nodes ' + IntToStr(Nodes) +
      ' pv ' + pv + ' str '+ IntToStr(Nodes));
-   end;
+  } end;
 
 
   //   WriteString('info depth '+ IntToStr(i) +' score cp '+ IntToStr(-BestMove.Eval) + ' nodes ' + IntToStr(Nodes));

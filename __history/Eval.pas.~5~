@@ -62,13 +62,13 @@ begin
       if (BoardN.Cells[i, j] = 1) then
       for k := j + 1 to 7 do
       begin
-        if BoardN.Cells[i, k] = 1 then Result := Result - 20;
+        if BoardN.Cells[i, k] = 1 then Result := Result - 30;
       end;
 
       if (BoardN.Cells[i, j] = -1) then
       for k := j - 1 downto 2 do
       begin
-        if BoardN.Cells[i, k] = -1 then Result := Result + 20;
+        if BoardN.Cells[i, k] = -1 then Result := Result + 30;
       end;
 
       if (BoardN.Cells[i, j] = 1) then
@@ -81,20 +81,28 @@ begin
 
     case Fig of
 
-      1: Result := Result + 99;
-     -1: Result := Result - 99;
+      1: Result := Result + 95;
+     -1: Result := Result - 95;
       6: Result := Result + 50000;
      -6: Result := Result - 50000;
-      2: Result := Result + 330;
-     -2: Result := Result - 330;
-      3: Result := Result + 331;
-     -3: Result := Result - 331;
+      2: Result := Result + 340;
+     -2: Result := Result - 340;
+      3: Result := Result + 340;
+     -3: Result := Result - 340;
       4: Result := Result + 540;
      -4: Result := Result - 540;
       5: Result := Result + 940;
      -5: Result := Result - 940;
     end;
 
+
+
+ {   if BoardN.Cells[i, j] > 0 then
+      Result := Result + BoardN.Cells[i, j]*j;
+
+    if BoardN.Cells[i, j] < 0 then
+      Result := Result + BoardN.Cells[i, j]*(9 - j);
+  }
 
   end;
 

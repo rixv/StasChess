@@ -58,7 +58,7 @@ end;
 
 
 type TMoves = record
-  Move: array[1..90] of TMove;
+  Move: array[1..60] of TMove;
   Count: Integer;
 end;
 

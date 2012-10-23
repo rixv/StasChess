@@ -18,12 +18,18 @@ var Nodes, HashNodes: LongInt;
 
 
 function MinMax(Board: TBoard; Depth, Alpha, Beta: Integer; var Pv: TPVMoves; CMove: Boolean): TMove;
-var PMoves: TMoves; i, Val, BestVal: Integer; CheckBoard: TBoard;
-  Hash: LongWord;  rDepth, BestMoveIndex: Byte; SMoves: String;
+var PMoves: TMoves; i, Val, BestVal: Integer; BestMove, TestMove: TMove; CheckBoard: TBoard;
+  Hash: LongWord;  rDepth, riDepth: Byte; SMoves: String;
 begin
 
-  BestMoveIndex := 1;
-  BestVal := -1111;
+  BestMove.Sort := -99999;
+  BestMove.FromX := 1;
+  BestMove.FromY := 1;
+  BestMove.ToX := 1;
+  BestMove.ToY := 1;
+  BestMove.Transform := #0;
+  BestMove.Eval := 0;
+  rDepth := Depth;
 
 
 
@@ -46,17 +52,26 @@ begin
 
           CheckBoard := DoMove(Board, PMoves.Move[i]);
           Hash := GetHash(CheckBoard);
-          rDepth := Depth - 1;
-          Val := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove).Eval;
 
-       //   HashTable[Hash].Val := Val - Alpha;
+//          if (Depth <> 1) and (i > PMoves.Count / 1.0) then  rDepth :=  1 else rDepth := 0;
+
+        //  if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 50)
+        //    then riDepth := iDepth - 1 else
+
+
+          rDepth := Depth - 1;
+
+          TestMove := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove);
+          Val := TestMove.EVal;
+
+          HashTable[Hash].Val := Val - Alpha;
 
           if Val > Alpha then
           begin
             Alpha := Val;
-            BestMoveIndex := i;
+            BestVal := Val;
+            BestMove := PMoves.Move[i];
           end;
-          BestVal := Alpha;
           if Beta <= Alpha then Break;
        end;
      end;
@@ -75,30 +90,35 @@ begin
         begin
           CheckBoard := DoMove(Board, PMoves.Move[i]);
           Hash := GetHash(CheckBoard);
-          rDepth := Depth - 1;
 
-          Val := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove).Eval;
+  //        if (Depth <> 1) and (i > PMoves.Count / 1.0) then  rDepth :=  1 else rDepth := 0;
 
+        //  if (Depth = 1) and (iDepth > 0) and (PMoves.Move[i].Sort > 50)
+        //    then riDepth := iDepth - 1 else
 
-     //     HashTable[Hash].Val := Beta - Val;
+            rDepth := Depth - 1;
+
+            TestMove := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove);
+            Val := TestMove.EVal;
+
+          HashTable[Hash].Val := Beta - Val;
 
           if Val < Beta then
           begin
             Beta := Val;
-            BestMoveindex := i;
+            BestVal := Val;
+            BestMove := PMoves.Move[i];
           end;
-          BestVal := Beta;
+
           if Beta <= Alpha then Break;
         end;
       end;
     end;
 
-   if PMoves.Count > 0 then
-   begin
-     Result := PMoves.Move[BestMoveIndex];
-     Pv.Depth := Depth;
-     Pv.Moves[Depth] := MoveToEasyMove(Result);
-   end;
+   Result := BestMove;
+   Pv.Depth := Depth;
+   Pv.Moves[Depth] := MoveToEasyMove(BestMove);
+
   end else
 
   begin
@@ -127,6 +147,7 @@ begin
 
   ClearHash;
   Nodes := 0;
+  HashNodes := 0;
   randomize;
   IsBlack := False;
   SL := TStringList.Create;
@@ -158,14 +179,13 @@ begin
    if (s[1] = 'g') and (s[2] = 'o') then
    begin
 
-     NOdes := 0;
-//     ClearHash;
+     HashNodes := 0;
+     ClearHash;
 
 
-//     if GetEndSpiel(Board) then MainDepth := 5 else MainDepth := 6;
+     if GetEndSpiel(Board) then MainDepth := 5 else MainDepth := 6;
 
-     i := 6;
-    /// for i := 1 to 6 do
+     for i := 1 to 5 do
      begin
        BestMove := MinMax(Board, i, -65530, 65530, iPv, Board.EngineColor);
 
@@ -173,6 +193,12 @@ begin
        sleep(20);
      end;
 
+    { nc := 0;
+     for i := 0 to HASHSIZE do
+     if HashTable[i].Val <> 0 then
+       inc(nc);
+     ShowMessage(IntToStr(NC));
+     }
 
      pv := '';
 
@@ -187,7 +213,7 @@ begin
      ' pv ' + pv + ' str '+ IntToStr(Nodes));
    end;
 
-
+     NOdes := 0;
   //   WriteString('info depth '+ IntToStr(i) +' score cp '+ IntToStr(-BestMove.Eval) + ' nodes ' + IntToStr(Nodes));
 
 

@@ -18,19 +18,12 @@ const
 
 
 
-
-
 type TEasyMove = record
   FromX: Byte;
   FromY: Byte;
   ToX: Byte;
   ToY: Byte;
   Transform: Char;
-end;
-
-type TPVMoves = record
-   Moves: array[1..10] of TEasyMove;
-   Depth: Byte;
 end;
 
 type TMove = record
@@ -41,6 +34,8 @@ type TMove = record
   Transform: Char;
   Eval: Integer;
   Sort: Integer;
+  Pv: array[1..10] of TEasyMove;
+  Depth: Byte;
 end;
 
 type TBoard = record

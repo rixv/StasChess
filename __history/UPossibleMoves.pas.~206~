@@ -4,18 +4,18 @@ interface
 
   uses SysUtils, ChessTypes, Dialogs, UIni, FastAsm, UHash;
 
-  function QueenMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function RookMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function BishopMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function KnightMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function PieceMoveCount(var Board: TBoard; i, j: Byte): Byte;
+  function QueenMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function RookMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function BishopMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function KnightMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function PieceMoveCount(Board: TBoard; i, j: Byte): Byte;
 
-  function MoveCountWhite(var Board: TBoard): Word;
-  function MoveCountBlack(var Board: TBoard): Word;
+  function MoveCountWhite(Board: TBoard): Word;
+  function MoveCountBlack(Board: TBoard): Word;
 
-  function PossibleMovesWhite(var Board: TBoard): TMoves;
-  function DoMove(var Board: TBoard; Move: TMove): TBoard;
-  function PossibleMovesBlack(var Board: TBoard): TMoves;
+  function PossibleMovesWhite(Board: TBoard): TMoves;
+  function DoMove(Board: TBoard; Move: TMove): TBoard;
+  function PossibleMovesBlack(Board: TBoard): TMoves;
   function ApplyMoves(Board: TBoard; SMoves: String): TBoard;
   function ThreatTo(var BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
   function ThreatToKing(Board: TBoard; Color: Boolean): Boolean;
@@ -229,7 +229,7 @@ begin
 end;
 
 
-function DoMove(var Board: TBoard; Move: TMove): TBoard;
+function DoMove(Board: TBoard; Move: TMove): TBoard;
 begin
 
   Result := Board;
@@ -560,8 +560,8 @@ begin
 end;
 
 
-function PossibleMovesWhite(var Board: TBoard): TMoves;
-var I, J: Integer;
+function PossibleMovesWhite(Board: TBoard): TMoves;
+var I, J, a, b, t: Integer;
     Smoves: String; CResult: TMoves;
 begin
   CResult.Count := 0;
@@ -634,7 +634,7 @@ end;
 
 
 
-function PossibleMovesBlack(var Board: TBoard): TMoves;
+function PossibleMovesBlack(Board: TBoard): TMoves;
 var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
@@ -719,7 +719,7 @@ end;
 
 
 
-function MoveCountWhite(var Board: TBoard): Word;
+function MoveCountWhite(Board: TBoard): Word;
 var I, J, a, b, t: Integer;
 begin
   Result := 0;
@@ -742,7 +742,7 @@ begin
 
 end;
 
-function MoveCountBlack(var Board: TBoard): Word;
+function MoveCountBlack(Board: TBoard): Word;
 var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
@@ -765,7 +765,7 @@ end;
 
 
 
-function BishopMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function BishopMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
   Result := 0;
@@ -806,7 +806,7 @@ end;
 
 
 
-function PieceMoveCount(var Board: TBoard; i, j: Byte): Byte;
+function PieceMoveCount(Board: TBoard; i, j: Byte): Byte;
 begin
   Result := 0;
   if Board.Cells[i, j + 1] = 0 then
@@ -825,7 +825,7 @@ begin
 end;
 
 
-function KnightMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function KnightMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b: ShortInt;
 begin
   Result := 0;
@@ -841,7 +841,7 @@ end;
 
 
 
-function QueenMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function QueenMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
   Result := 0;
@@ -882,7 +882,7 @@ end;
 
 
 
-function RookMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function RookMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
 

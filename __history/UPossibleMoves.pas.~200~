@@ -4,20 +4,20 @@ interface
 
   uses SysUtils, ChessTypes, Dialogs, UIni, FastAsm, UHash;
 
-  function QueenMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function RookMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function BishopMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function KnightMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
-  function PieceMoveCount(var Board: TBoard; i, j: Byte): Byte;
+  function QueenMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function RookMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function BishopMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function KnightMoveCount(Board: TBoard; i, j: ShortInt): Byte;
+  function PieceMoveCount(Board: TBoard; i, j: Byte): Byte;
 
-  function MoveCountWhite(var Board: TBoard): Word;
-  function MoveCountBlack(var Board: TBoard): Word;
+  function MoveCountWhite(Board: TBoard): Word;
+  function MoveCountBlack(Board: TBoard): Word;
 
-  function PossibleMovesWhite(var Board: TBoard): TMoves;
-  function DoMove(var Board: TBoard; Move: TMove): TBoard;
-  function PossibleMovesBlack(var Board: TBoard): TMoves;
+  function PossibleMovesWhite(Board: TBoard): TMoves;
+  function DoMove(Board: TBoard; Move: TMove): TBoard;
+  function PossibleMovesBlack(Board: TBoard): TMoves;
   function ApplyMoves(Board: TBoard; SMoves: String): TBoard;
-  function ThreatTo(var BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
+  function ThreatTo(BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
   function ThreatToKing(Board: TBoard; Color: Boolean): Boolean;
 
   function HashSort(Board: TBoard; Moves: TMoves): TMoves;
@@ -44,7 +44,7 @@ begin
 
 end;
 
-function ThreatTo(var BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
+function ThreatTo(BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
 var i, j, a, b, t, n, m: Integer; Board: TBoard;
 begin
 
@@ -229,7 +229,8 @@ begin
 end;
 
 
-function DoMove(var Board: TBoard; Move: TMove): TBoard;
+function DoMove(Board: TBoard; Move: TMove): TBoard;
+var SMoves: String; j:integer;
 begin
 
   Result := Board;
@@ -245,7 +246,7 @@ begin
   end else
   begin
 
-    if not Board.A1RookMoveW and (Board.Cells[Move.FromX, Move.FromY] = 4) and (Move.FromX = 1) then
+    if (Board.Cells[Move.FromX, Move.FromY] = 4) and (Move.FromX = 1) then
       Result.A1RookMoveW := True;
     if (Board.Cells[Move.FromX, Move.FromY] = 4) and (Move.FromX = 8) then
       Result.H1RookMoveW := True;
@@ -261,8 +262,8 @@ begin
 
 
 
-    if  (abs(Board.Cells[Move.fromx, Move.fromy]) = 1) and (Move.FromX <> Move.ToX) and (Board.Cells[Move.ToX, Move.ToY] = 0) and
-         (abs(Board.Cells[Move.ToX, Move.FromY]) = 1) then
+    if  (Move.FromX <> Move.ToX) and (Board.Cells[Move.ToX, Move.ToY] = 0) and
+        (abs(Board.Cells[Move.fromx, Move.fromy]) = 1) and (abs(Board.Cells[Move.ToX, Move.FromY]) = 1) then
     begin
       Result.Cells[Move.ToX, Move.FromY] := 0;
     end;
@@ -302,7 +303,7 @@ begin
 end;
 
 
-procedure AddMove(var Moves: TMoves; i, j, a, b, iSort: Integer; S: Char);
+function AddMove(Moves: TMoves; i, j, a, b, iSort: Integer; S: Char): TMoves;
 begin
   Moves.Count := Moves.Count + 1;
   with Moves.Move[Moves.Count] do
@@ -314,11 +315,12 @@ begin
     ToY := b;
     Sort := iSort;
   end;
+  Result := Moves;
 end;
 
 
 
-procedure BishopMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt);
+function BishopMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -337,11 +339,11 @@ begin
       begin
         if t < 0 then
         begin
-          AddMove(Moves, i, j, a, b, abs(t) * 100 - 3, #0);
+          Moves := AddMove(Moves, i, j, a, b, abs(t) * 100 - 3, #0);
           a := -1;
         end
         else
-          AddMove(Moves, i, j, a, b, 5, #0);
+          Moves := AddMove(Moves, i, j, a, b, 5, #0);
 
         a := a + x;
         b := b + y;
@@ -353,11 +355,13 @@ begin
        end;
      end;
 
+     Result := Moves;
+
 end;
 
 
 
-procedure RookMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt);
+function RookMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -376,11 +380,11 @@ begin
       begin
         if t < 0 then
         begin
-          AddMove(Moves, i, j, a, b, abs(t) * 100 - 4, #0);
+          Moves := AddMove(Moves, i, j, a, b, abs(t) * 100 - 4, #0);
           a := -1;
         end
         else
-          AddMove(Moves, i, j, a, b, 8, #0);
+          Moves := AddMove(Moves, i, j, a, b, 8, #0);
 
         a := a + x;
         b := b + y;
@@ -392,10 +396,12 @@ begin
        end;
      end;
 
+     Result := Moves;
+
 end;
 
 
-procedure QueenMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt);
+function QueenMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b, t, x, y: ShortInt;
 begin
 
@@ -414,11 +420,11 @@ begin
       begin
         if t < 0 then
         begin
-          AddMove(Moves, i, j, a, b, abs(t) * 100 - 5, #0);
+          Moves := AddMove(Moves, i, j, a, b, abs(t) * 100 - 5, #0);
           a := -1;
         end
         else
-          AddMove(Moves, i, j, a, b, 10, #0);
+          Moves := AddMove(Moves, i, j, a, b, 10, #0);
 
         a := a + x;
         b := b + y;
@@ -430,11 +436,13 @@ begin
        end;
      end;
 
+     Result := Moves;
+
 end;
 
 
 
-procedure KnightMoves(var Moves: TMoves; Board: TBoard; i, j: ShortInt);
+function KnightMoves(Moves: TMoves; Board: TBoard; i, j: ShortInt): TMoves;
 var a, b: ShortInt;
 begin
     for a := -2 to 2 do
@@ -444,29 +452,30 @@ begin
         if ((a + i) in [1..8]) and ((b + j) in [1..8]) then
         if Board.Cells[i + a, j + b] <= 0 then
         if Board.Cells[i + a, j + b] < 0 then
-          AddMove(Moves, i, j, i + a, j + b, abs(Board.Cells[i + a, j + b]) * 100 - 2, #0)
+          Moves := AddMove(Moves, i, j, i + a, j + b, abs(Board.Cells[i + a, j + b]) * 100 - 2, #0)
         else
-          AddMove(Moves, i, j, i + a, j + b, 6, #0);
+          Moves := AddMove(Moves, i, j, i + a, j + b, 6, #0);
       end;
+  Result := Moves;
 end;
 
 
-procedure PieceMoves(var Moves: TMoves; Board: TBoard; i, j: Byte);
+function PieceMoves(Moves: TMoves; Board: TBoard; i, j: Byte): TMoves;
 begin
   if Board.Cells[i, j + 1] = 0 then
   begin
     if j = 7 then
     begin
-      AddMove(Moves, i, j, i, j + 1, 10000, 'q');
-      AddMove(Moves, i, j, i, j + 1, 9000, 'r');
-      AddMove(Moves, i, j, i, j + 1, 7000, 'b');
-      AddMove(Moves, i, j, i, j + 1, 8000, 'n');
+      Moves := AddMove(Moves, i, j, i, j + 1, 10000, 'q');
+      Moves := AddMove(Moves, i, j, i, j + 1, 9000, 'r');
+      Moves := AddMove(Moves, i, j, i, j + 1, 7000, 'b');
+      Moves := AddMove(Moves, i, j, i, j + 1, 8000, 'n');
     end
     else
     begin
-      AddMove(Moves, i, j, i, j + 1, 1, #0);
+      Moves := AddMove(Moves, i, j, i, j + 1, 1, #0);
       if (j = 2) and (Board.Cells[i, j + 2] = 0) then
-        AddMove(Moves, i, j, i, j + 2, 0, #0);
+        Moves := AddMove(Moves, i, j, i, j + 2, 0, #0);
     end;
   end;
 
@@ -474,25 +483,25 @@ begin
   if (Board.Cells[i + 1, j + 1] < 0) then
   if j = 7 then
   begin
-    AddMove(Moves, i, j, i + 1, j + 1, 10001, 'q');
-    AddMove(Moves, i, j, i + 1, j + 1, 9001, 'r');
-    AddMove(Moves, i, j, i + 1, j + 1, 7001, 'b');
-    AddMove(Moves, i, j, i + 1, j + 1, 8001, 'n');
+    Moves := AddMove(Moves, i, j, i + 1, j + 1, 10001, 'q');
+    Moves := AddMove(Moves, i, j, i + 1, j + 1, 9001, 'r');
+    Moves := AddMove(Moves, i, j, i + 1, j + 1, 7001, 'b');
+    Moves := AddMove(Moves, i, j, i + 1, j + 1, 8001, 'n');
   end
   else
-    AddMove(Moves, i, j, i + 1, j + 1, abs(Board.Cells[i + 1, j + 1])*100, #0);
+    Moves := AddMove(Moves, i, j, i + 1, j + 1, abs(Board.Cells[i + 1, j + 1])*100, #0);
 
   if i > 1 then
   if (Board.Cells[i - 1, j + 1] < 0)  then
   if j = 7 then
   begin
-    AddMove(Moves, i, j, i - 1, j + 1, 10001, 'q');
-    AddMove(Moves, i, j, i - 1, j + 1, 9001, 'r');
-    AddMove(Moves, i, j, i - 1, j + 1, 7001, 'b');
-    AddMove(Moves, i, j, i - 1, j + 1, 8001, 'n');
+    Moves := AddMove(Moves, i, j, i - 1, j + 1, 10001, 'q');
+    Moves := AddMove(Moves, i, j, i - 1, j + 1, 9001, 'r');
+    Moves := AddMove(Moves, i, j, i - 1, j + 1, 7001, 'b');
+    Moves := AddMove(Moves, i, j, i - 1, j + 1, 8001, 'n');
   end
   else
-    AddMove(Moves, i, j, i - 1, j + 1, abs(Board.Cells[i - 1, j + 1])*100, #0);
+    Moves := AddMove(Moves, i, j, i - 1, j + 1, abs(Board.Cells[i - 1, j + 1])*100, #0);
 
 
   if (j = 5) and (Board.LastMove.ToY = 5) and (Board.LastMove.FromY = 7) then
@@ -500,17 +509,18 @@ begin
     if Board.Cells[Board.LastMove.ToX, Board.LastMove.ToY] = -1 then
     begin
       if Board.LastMove.ToX = i - 1 then
-        AddMove(Moves, i, j, i - 1, j + 1, 101, #0);
+        Moves := AddMove(Moves, i, j, i - 1, j + 1, 101, #0);
       if Board.LastMove.ToX = i + 1 then
-        AddMove(Moves, i, j, i + 1, j + 1, 101, #0);
+        Moves := AddMove(Moves, i, j, i + 1, j + 1, 101, #0);
     end;
   end;
 
 
+  Result := Moves;
 end;
 
 
-procedure KingMoves(var Moves: TMoves; Board: TBoard; i, j: Byte);
+function KingMoves(var Moves: TMoves; Board: TBoard; i, j: Byte): TMoves;
 var a, b, x, y, t: ShortInt;
 begin
 
@@ -522,7 +532,7 @@ begin
     if not ThreatTo(Board, 6, 1, True) then
     if (i = 5) and (j = 1) then
     begin
-      AddMove(Moves, i, j, i + 2, j, 6, #0);
+      Moves := AddMove(Moves, i, j, i + 2, j, 6, #0);
     end;
   end;
 
@@ -535,7 +545,7 @@ begin
     if not ThreatTo(Board, 2, 1, True) then
     if (i = 5) and (j = 1) then
     begin
-      AddMove(Moves, i, j, i - 2, j, 6, #0);
+      Moves := AddMove(Moves, i, j, i - 2, j, 6, #0);
     end;
   end;
 
@@ -551,17 +561,18 @@ begin
       else t := 1;
 
       if t < 0 then
-        AddMove(Moves, i, j, A, b, abs(t) * 100 - 6, #0);
+        Moves := AddMove(Moves, i, j, A, b, abs(t) * 100 - 6, #0);
       if t = 0 then
-        AddMove(Moves, i, j, a, B, 0, #0);
+        Moves := AddMove(Moves, i, j, a, B, 0, #0);
 
     end;
 
+  Result := Moves;
 end;
 
 
-function PossibleMovesWhite(var Board: TBoard): TMoves;
-var I, J: Integer;
+function PossibleMovesWhite(Board: TBoard): TMoves;
+var I, J, a, b, t: Integer;
     Smoves: String; CResult: TMoves;
 begin
   CResult.Count := 0;
@@ -574,12 +585,12 @@ begin
     begin
 
       case Board.Cells[i, j] of
-        1: PieceMoves(CResult, Board, i, j);
-        2: KnightMoves(CResult, Board, i, j);
-        3: BishopMoves(CResult, Board, i, j);
-        4: RookMoves(CResult, Board, i, j);
-        5: QueenMoves(CResult, Board, i, j);
-        6: KingMoves(CResult, Board, i, j);
+        1: CResult := PieceMoves(CResult, Board, i, j);
+        2: CResult := KnightMoves(CResult, Board, i, j);
+        3: CResult := BishopMoves(CResult, Board, i, j);
+        4: CResult := RookMoves(CResult, Board, i, j);
+        5: CResult := QueenMoves(CResult, Board, i, j);
+        6: CResult := KingMoves(CResult, Board, i, j);
       end;
 
     end;
@@ -604,7 +615,7 @@ begin
 
   if Result.Count > 1 then
   begin
-//    Result := HashSort(Board, Result);
+    Result := HashSort(Board, Result);
     qSort(Result, 1, Result.Count);
   end;
 
@@ -634,7 +645,7 @@ end;
 
 
 
-function PossibleMovesBlack(var Board: TBoard): TMoves;
+function PossibleMovesBlack(Board: TBoard): TMoves;
 var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
@@ -719,7 +730,7 @@ end;
 
 
 
-function MoveCountWhite(var Board: TBoard): Word;
+function MoveCountWhite(Board: TBoard): Word;
 var I, J, a, b, t: Integer;
 begin
   Result := 0;
@@ -742,7 +753,7 @@ begin
 
 end;
 
-function MoveCountBlack(var Board: TBoard): Word;
+function MoveCountBlack(Board: TBoard): Word;
 var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
@@ -765,7 +776,7 @@ end;
 
 
 
-function BishopMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function BishopMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
   Result := 0;
@@ -806,7 +817,7 @@ end;
 
 
 
-function PieceMoveCount(var Board: TBoard; i, j: Byte): Byte;
+function PieceMoveCount(Board: TBoard; i, j: Byte): Byte;
 begin
   Result := 0;
   if Board.Cells[i, j + 1] = 0 then
@@ -825,7 +836,7 @@ begin
 end;
 
 
-function KnightMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function KnightMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b: ShortInt;
 begin
   Result := 0;
@@ -841,7 +852,7 @@ end;
 
 
 
-function QueenMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function QueenMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
   Result := 0;
@@ -882,7 +893,7 @@ end;
 
 
 
-function RookMoveCount(var Board: TBoard; i, j: ShortInt): Byte;
+function RookMoveCount(Board: TBoard; i, j: ShortInt): Byte;
 var a, b, t, x, y: ShortInt;
 begin
 

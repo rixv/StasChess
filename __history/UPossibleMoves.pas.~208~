@@ -15,7 +15,7 @@ interface
 
   function PossibleMovesWhite(var Board: TBoard): TMoves;
   function DoMove(var Board: TBoard; Move: TMove): TBoard;
-  function PossibleMovesBlack(var Board: TBoard): TMoves;
+  function PossibleMovesBlack(Board: TBoard): TMoves;
   function ApplyMoves(Board: TBoard; SMoves: String): TBoard;
   function ThreatTo(var BoardA: TBoard; x, y: Integer; Color: Boolean): Boolean;
   function ThreatToKing(Board: TBoard; Color: Boolean): Boolean;
@@ -561,7 +561,7 @@ end;
 
 
 function PossibleMovesWhite(var Board: TBoard): TMoves;
-var I, J: Integer;
+var I, J, a, b, t: Integer;
     Smoves: String; CResult: TMoves;
 begin
   CResult.Count := 0;
@@ -634,7 +634,7 @@ end;
 
 
 
-function PossibleMovesBlack(var Board: TBoard): TMoves;
+function PossibleMovesBlack(Board: TBoard): TMoves;
 var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
