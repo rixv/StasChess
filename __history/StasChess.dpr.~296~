@@ -13,7 +13,7 @@ uses
   UHash in 'UHash.pas',
   Eval in 'Eval.pas';
 
-var Nodes, HashNodes, nColliz: LongInt;
+var Nodes, HashNodes: LongInt;
 
 
 procedure Relax;
@@ -59,14 +59,6 @@ begin
 
 
          if (HashTable[Hash mod HashSize].RealHash = Hash) and
-         (GetFigCount(CheckBoard) <> HashTable[Hash mod HashSize].FigCount)
-         then
-         begin
-            Inc(nColliz);
-         end;
-
-
-         if (HashTable[Hash mod HashSize].RealHash = Hash) and
          (HashTable[Hash mod HashSize].Depth >= rDepth) then
          begin
           Val := HashTable[Hash mod HashSize].Val;
@@ -78,7 +70,6 @@ begin
             HashTable[Hash mod HashSize].Val := Val;
             HashTable[Hash mod HashSize].Depth := rDepth;
             HashTable[Hash mod HashSize].RealHash := Hash;
-            HashTable[Hash mod HashSize].FigCount := GetFigCount(CheckBoard);
          end;
 
           if Val > Alpha then
@@ -121,7 +112,6 @@ begin
             HashTable[Hash mod HashSize].Val := Val;
             HashTable[Hash mod HashSize].Depth := rDepth;
             HashTable[Hash mod HashSize].RealHash := Hash;
-            HashTable[Hash mod HashSize].FigCount := GetFigCount(CheckBoard);
           end;
           if Val < Beta then
           begin
@@ -199,7 +189,6 @@ begin
 
      NOdes := 0;
      HashNodes := 0;
-     nColliz := 0;
 
 
      if GetEndSpiel(Board) then i := 8 else i := 6;
@@ -229,7 +218,7 @@ begin
    + ' pv ' + pv
    + ' hashfull ' + IntToStr(HashFullness)
    + ' string '+
-      'hash: ' + IntToStr(HashNodes) + ' colliz: '+IntToStr(nColliz));
+      'hash: ' + IntToStr(HashNodes));
    end;
 
 

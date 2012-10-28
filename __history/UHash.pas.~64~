@@ -7,13 +7,13 @@ interface
 const HASHSIZE = 5000000;
 
 type THashRecord=record
-  RealHash: Int64;
+  RealHash: Cardinal;
   Val: Integer;
   Depth: Byte;
   FigCount: Byte;
 end;
 
-function GetHash(var Board: TBoard): Int64;
+function GetHash(var Board: TBoard): CArdinal;
 procedure ClearHash;
 function HashFullness: Cardinal;
 
@@ -65,7 +65,7 @@ begin
   end;
 end;
 
-function Rol32(Value, Shift: LongWord): LongWord;
+function Rol32(Value, Shift: Cardinal): CArdinal;
 asm
   mov ecx, edx
   rol eax, cl
@@ -91,9 +91,9 @@ end;
 
 
 
-function GetHash(var Board: TBoard): Int64;
+function GetHash(var Board: TBoard): CArdinal;
 var i, j: Integer;
-  Val: Word64; Shift: Byte;
+  Val: CArdinal;
 begin
 
   Val := 9008;
@@ -104,24 +104,32 @@ begin
   Val := Val xor Board.LastMove.FromY;
 193745}
 
-  if Board.H1RookMoveW then Val := Int64(Val) xor 123;
-  if Board.A1RookMoveW then Val := Int64(Val) xor 234;
-  if Board.KingMoveW then Val := Int64(Val) xor 345;
-  if Board.H1RookMoveB then Val := Int64(Val) xor 456;
-  if Board.A1RookMoveB then Val := Int64(Val) xor 567;
-  if Board.KingMoveB then Val := Int64(Val) xor 678;
+  if Board.H1RookMoveW then Val := (Val) xor 123;
+  if Board.A1RookMoveW then Val := (Val) xor 234;
+  if Board.KingMoveW then Val := (Val) xor 345;
+  if Board.H1RookMoveB then Val := (Val) xor 456;
+  if Board.A1RookMoveB then Val := (Val) xor 567;
+  if Board.KingMoveB then Val := (Val) xor 678;
 
 
-   for i := 1 to 8 do
-   for j := 1 to 8 do
+  for i := 1 to 8 do
+    for j := 1 to 8 do
     begin
-      Val := Val xor Int64((Board.Cells[i, j]) + 7) + i*j;
-      shift := 15;
-      Val := val shl shift or Val shr -shift;
+      Val := Val xor LongWord((Board.Cells[i, j]) + 7);
+      Val := Rol32(Val, 3);
+   end;
+
+ /// Result := GetFigCount(Board);
+
+  for i := 1 to 8 do
+    for j := 1 to 8 do
+    begin
+      Result := Result xor LongWord((I*J-1));
+      Result := Rol32(Result, LongWord(Board.Cells[i, j]) + 7);
    end;
 
 
-   Result := abs(Val);
+  Result := Val xor Result;
 end;
 
 

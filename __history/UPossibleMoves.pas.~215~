@@ -599,7 +599,7 @@ begin
 
   if Result.Count > 1 then
   begin
-   // Result := HashSort(Board, Result);
+    Result := HashSort(Board, Result);
     qSort(Result, 1, Result.Count);
   end;
 

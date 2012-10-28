@@ -93,7 +93,7 @@ end;
 
 function GetHash(var Board: TBoard): Int64;
 var i, j: Integer;
-  Val: Word64; Shift: Byte;
+  Val: Int64; Shift: Byte;
 begin
 
   Val := 9008;

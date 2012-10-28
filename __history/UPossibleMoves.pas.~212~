@@ -599,7 +599,7 @@ begin
 
   if Result.Count > 1 then
   begin
-   // Result := HashSort(Board, Result);
+//    Result := HashSort(Board, Result);
     qSort(Result, 1, Result.Count);
   end;
 
@@ -621,13 +621,13 @@ function HashSort(Board: TBoard; Moves: TMoves): TMoves;
 var i: Byte; CheckBoard: TBoard; Hash: LongWord;
 begin
   for i := 1 to Moves.Count do
-//  if  Moves.Move[i].Sort < 30 then
+  if  Moves.Move[i].Sort < 30 then
   begin
     CheckBoard := DoMove(Board, Moves.Move[i]);
     Hash := GetHash(CheckBoard);
 
     if HashTable[Hash mod HashSize].RealHash = Hash then
-      Moves.Move[i].Sort := Moves.Move[i].Sort + 20;//round(sqrt(abs(HashTable[Hash mod HashSize].Val)));
+      Moves.Move[i].Sort := Moves.Move[i].Sort + HashTable[Hash mod HashSize].Val;
   end;
     Result := Moves;
 end;

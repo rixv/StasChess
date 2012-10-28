@@ -599,7 +599,7 @@ begin
 
   if Result.Count > 1 then
   begin
-   // Result := HashSort(Board, Result);
+    Result := HashSort(Board, Result);
     qSort(Result, 1, Result.Count);
   end;
 
@@ -627,7 +627,7 @@ begin
     Hash := GetHash(CheckBoard);
 
     if HashTable[Hash mod HashSize].RealHash = Hash then
-      Moves.Move[i].Sort := Moves.Move[i].Sort + 20;//round(sqrt(abs(HashTable[Hash mod HashSize].Val)));
+      Moves.Move[i].Sort := Moves.Move[i].Sort + 1020;//round(sqrt(abs(HashTable[Hash mod HashSize].Val)));
   end;
     Result := Moves;
 end;

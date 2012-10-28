@@ -7,13 +7,13 @@ interface
 const HASHSIZE = 5000000;
 
 type THashRecord=record
-  RealHash: Int64;
+  RealHash: Cardinal;
   Val: Integer;
   Depth: Byte;
   FigCount: Byte;
 end;
 
-function GetHash(var Board: TBoard): Int64;
+function GetHash(var Board: TBoard): CArdinal;
 procedure ClearHash;
 function HashFullness: Cardinal;
 
@@ -91,9 +91,9 @@ end;
 
 
 
-function GetHash(var Board: TBoard): Int64;
+function GetHash(var Board: TBoard): CArdinal;
 var i, j: Integer;
-  Val: Word64; Shift: Byte;
+  Val, shift: CArdinal;
 begin
 
   Val := 9008;
@@ -104,24 +104,36 @@ begin
   Val := Val xor Board.LastMove.FromY;
 193745}
 
-  if Board.H1RookMoveW then Val := Int64(Val) xor 123;
-  if Board.A1RookMoveW then Val := Int64(Val) xor 234;
-  if Board.KingMoveW then Val := Int64(Val) xor 345;
-  if Board.H1RookMoveB then Val := Int64(Val) xor 456;
-  if Board.A1RookMoveB then Val := Int64(Val) xor 567;
-  if Board.KingMoveB then Val := Int64(Val) xor 678;
+  if Board.H1RookMoveW then Val := (Val) xor 123;
+  if Board.A1RookMoveW then Val := (Val) xor 234;
+  if Board.KingMoveW then Val := (Val) xor 345;
+  if Board.H1RookMoveB then Val := (Val) xor 456;
+  if Board.A1RookMoveB then Val := (Val) xor 567;
+  if Board.KingMoveB then Val := (Val) xor 678;
 
 
-   for i := 1 to 8 do
+   for i := 1 to 4 do
    for j := 1 to 8 do
     begin
-      Val := Val xor Int64((Board.Cells[i, j]) + 7) + i*j;
-      shift := 15;
+      Val := Val xor LongWord((Board.Cells[i, j]) + 7) + i*j;
+      shift := Val mod LongWord((Board.Cells[i, j]) + 7);
       Val := val shl shift or Val shr -shift;
    end;
 
 
-   Result := abs(Val);
+   for i := 5 to 8 do
+   for j := 1 to 8 do
+    begin
+      Val := Val xor LongWord((Board.Cells[i, j]) + 7) + i*j;
+      shift := Val mod LongWord((Board.Cells[i, j]) + 7);
+      Val := val shr shift or Val shl -shift;
+   end;
+
+
+
+
+
+   Result := Val;
 end;
 
 

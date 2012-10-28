@@ -93,7 +93,7 @@ end;
 
 function GetHash(var Board: TBoard): Int64;
 var i, j: Integer;
-  Val: Word64; Shift: Byte;
+  Val, shift: Int64;
 begin
 
   Val := 9008;
@@ -104,12 +104,12 @@ begin
   Val := Val xor Board.LastMove.FromY;
 193745}
 
-  if Board.H1RookMoveW then Val := Int64(Val) xor 123;
-  if Board.A1RookMoveW then Val := Int64(Val) xor 234;
-  if Board.KingMoveW then Val := Int64(Val) xor 345;
-  if Board.H1RookMoveB then Val := Int64(Val) xor 456;
-  if Board.A1RookMoveB then Val := Int64(Val) xor 567;
-  if Board.KingMoveB then Val := Int64(Val) xor 678;
+  if Board.H1RookMoveW then Val := (Val) xor 123;
+  if Board.A1RookMoveW then Val := (Val) xor 234;
+  if Board.KingMoveW then Val := (Val) xor 345;
+  if Board.H1RookMoveB then Val := (Val) xor 456;
+  if Board.A1RookMoveB then Val := (Val) xor 567;
+  if Board.KingMoveB then Val := (Val) xor 678;
 
 
    for i := 1 to 8 do
@@ -121,7 +121,7 @@ begin
    end;
 
 
-   Result := abs(Val);
+   Result := Val;
 end;
 
 

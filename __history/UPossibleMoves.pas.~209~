@@ -95,7 +95,7 @@ begin
             Result := True;
             exit;
           end;
-          if (t = -6) and (abs(a - i) < 1) and (abs(b-j) < 1)  and ((n <> 0) or (m <> 0)) then
+          if (t = -6) and (abs(a - i) = 1) and (abs(b-j) = 1)  and ((n <> 0) or (m <> 0)) then
           begin
             Result := True;
             exit;
@@ -221,6 +221,11 @@ begin
 
 
 
+end;
+
+function Castling(Board: TBoard; Move: TMove): Boolean;
+begin
+//
 end;
 
 
@@ -557,7 +562,7 @@ end;
 
 function PossibleMovesWhite(var Board: TBoard): TMoves;
 var I, J: Integer;
-    CResult: TMoves;
+    Smoves: String; CResult: TMoves;
 begin
   CResult.Count := 0;
 
@@ -599,7 +604,7 @@ begin
 
   if Result.Count > 1 then
   begin
-   // Result := HashSort(Board, Result);
+//    Result := HashSort(Board, Result);
     qSort(Result, 1, Result.Count);
   end;
 
@@ -618,17 +623,11 @@ end;
 
 
 function HashSort(Board: TBoard; Moves: TMoves): TMoves;
-var i: Byte; CheckBoard: TBoard; Hash: LongWord;
+var i: Byte;
 begin
   for i := 1 to Moves.Count do
-//  if  Moves.Move[i].Sort < 30 then
-  begin
-    CheckBoard := DoMove(Board, Moves.Move[i]);
-    Hash := GetHash(CheckBoard);
-
-    if HashTable[Hash mod HashSize].RealHash = Hash then
-      Moves.Move[i].Sort := Moves.Move[i].Sort + 20;//round(sqrt(abs(HashTable[Hash mod HashSize].Val)));
-  end;
+  if  Moves.Move[i].Sort < 30 then
+    Moves.Move[i].Sort := Moves.Move[i].Sort + ((HashTable[GetHash(DoMove(Board, Moves.Move[i]))].Val));
     Result := Moves;
 end;
 
@@ -636,7 +635,7 @@ end;
 
 
 function PossibleMovesBlack(var Board: TBoard): TMoves;
-var i, j: Integer; InvBoard: TBoard;
+var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
   for j := 1 to 8 do
@@ -665,7 +664,7 @@ begin
   begin
     Result.Move[i].ToY := 9 - Result.Move[i].ToY;
     Result.Move[i].FromY := 9 - Result.Move[i].FromY;
-    Result.Move[i].Sort := Result.Move[i].Sort;
+//    Result.Move[i].Sort := Result.Move[i].Sort;
   end;
 
 end;
@@ -721,7 +720,7 @@ end;
 
 
 function MoveCountWhite(var Board: TBoard): Word;
-var I, J: Integer;
+var I, J, a, b, t: Integer;
 begin
   Result := 0;
 
@@ -744,7 +743,7 @@ begin
 end;
 
 function MoveCountBlack(var Board: TBoard): Word;
-var i, j: Integer; InvBoard: TBoard;
+var i, j: Integer; InvBoard: TBoard; Tmp: Boolean;
 begin
   for i := 1 to 8 do
   for j := 1 to 8 do

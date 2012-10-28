@@ -27,7 +27,7 @@ end;
 
 function MinMax(Board: TBoard; Depth, Alpha, Beta: Integer; var Pv: TPVMoves; CMove: Boolean): TMove;
 var PMoves: TMoves; i, Val, BestVal: Integer; CheckBoard: TBoard;
-  Hash: Int64;  rDepth, BestMoveIndex: Byte;
+  Hash: CArdinal;  rDepth, BestMoveIndex: Byte;
 begin
 
   BestMoveIndex := 1;

@@ -4,18 +4,18 @@ interface
 
   uses ChessTypes, UPossibleMoves;
 
-function Estimator(BoardN: TBoard; CMove: Boolean): Integer;
+function Estimator(var BoardN: TBoard): Integer;
 
 
 implementation
 
 
-function Estimator(BoardN: TBoard; CMove: Boolean): Integer;
-var i, j: Integer; Sb, Sw: Boolean; Fig: Integer; k, l: Integer;
-PMoves: TMoves; BCnt: Word;
+function Estimator(var BoardN: TBoard): Integer;
+var i, j: Integer; Fig: Integer; k: Integer;
+BCnt: Word;
 begin
 
-  Result := 0;
+//  Result := 0;
   Result := MoveCountWhite(BoardN)*4;
   BCnt := MoveCountBlack(BoardN)*4;
   Result := Result - Bcnt;

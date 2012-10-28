@@ -13,7 +13,7 @@ uses
   UHash in 'UHash.pas',
   Eval in 'Eval.pas';
 
-var Nodes, HashNodes, nColliz: LongInt;
+var Nodes, HashNodes: LongInt;
 
 
 procedure Relax;
@@ -27,13 +27,13 @@ end;
 
 function MinMax(Board: TBoard; Depth, Alpha, Beta: Integer; var Pv: TPVMoves; CMove: Boolean): TMove;
 var PMoves: TMoves; i, Val, BestVal: Integer; CheckBoard: TBoard;
-  Hash: Int64;  rDepth, BestMoveIndex: Byte;
+  Hash: LongWord;  rDepth, BestMoveIndex: Byte;
 begin
 
   BestMoveIndex := 1;
   BestVal := -1111;
 
-    if (Nodes <> 0) and ((Nodes mod 400000) = 0) then
+    if (Nodes <> 0) and ((Nodes mod 500000) = 0) then
       Relax;
 
     If Depth > 0 then
@@ -59,14 +59,6 @@ begin
 
 
          if (HashTable[Hash mod HashSize].RealHash = Hash) and
-         (GetFigCount(CheckBoard) <> HashTable[Hash mod HashSize].FigCount)
-         then
-         begin
-            Inc(nColliz);
-         end;
-
-
-         if (HashTable[Hash mod HashSize].RealHash = Hash) and
          (HashTable[Hash mod HashSize].Depth >= rDepth) then
          begin
           Val := HashTable[Hash mod HashSize].Val;
@@ -78,7 +70,6 @@ begin
             HashTable[Hash mod HashSize].Val := Val;
             HashTable[Hash mod HashSize].Depth := rDepth;
             HashTable[Hash mod HashSize].RealHash := Hash;
-            HashTable[Hash mod HashSize].FigCount := GetFigCount(CheckBoard);
          end;
 
           if Val > Alpha then
@@ -121,7 +112,6 @@ begin
             HashTable[Hash mod HashSize].Val := Val;
             HashTable[Hash mod HashSize].Depth := rDepth;
             HashTable[Hash mod HashSize].RealHash := Hash;
-            HashTable[Hash mod HashSize].FigCount := GetFigCount(CheckBoard);
           end;
           if Val < Beta then
           begin
@@ -199,7 +189,6 @@ begin
 
      NOdes := 0;
      HashNodes := 0;
-     nColliz := 0;
 
 
      if GetEndSpiel(Board) then i := 8 else i := 6;
@@ -225,11 +214,8 @@ begin
      SL.Add(ConvertMoveTOStr(BestMove));
 
      WriteString('info depth ' + IntToStr(i-1) +' nodes '+IntToStr(Nodes)+' score cp '
-     + IntToStr(-BestMove.Eval)+ ' time 0 nodes ' + IntToStr(Nodes)
-   + ' pv ' + pv
-   + ' hashfull ' + IntToStr(HashFullness)
-   + ' string '+
-      'hash: ' + IntToStr(HashNodes) + ' colliz: '+IntToStr(nColliz));
+     + IntToStr(-BestMove.Eval)+ ' time 0 nodes ' + IntToStr(Nodes) +
+     ' pv ' + pv + ' string '+ 'hash: ' + IntToStr(HashNodes));
    end;
 
 

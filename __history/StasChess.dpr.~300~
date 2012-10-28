@@ -13,7 +13,7 @@ uses
   UHash in 'UHash.pas',
   Eval in 'Eval.pas';
 
-var Nodes, HashNodes, nColliz: LongInt;
+var Nodes, HashNodes: LongInt;
 
 
 procedure Relax;
@@ -27,7 +27,7 @@ end;
 
 function MinMax(Board: TBoard; Depth, Alpha, Beta: Integer; var Pv: TPVMoves; CMove: Boolean): TMove;
 var PMoves: TMoves; i, Val, BestVal: Integer; CheckBoard: TBoard;
-  Hash: Int64;  rDepth, BestMoveIndex: Byte;
+  Hash: CArdinal;  rDepth, BestMoveIndex: Byte;
 begin
 
   BestMoveIndex := 1;
@@ -60,10 +60,9 @@ begin
 
          if (HashTable[Hash mod HashSize].RealHash = Hash) and
          (GetFigCount(CheckBoard) <> HashTable[Hash mod HashSize].FigCount)
-         then
-         begin
-            Inc(nColliz);
-         end;
+         then    begin
+            ShowMessage('Коллизия...' + IntToStr(Hash)); exit;
+            end;
 
 
          if (HashTable[Hash mod HashSize].RealHash = Hash) and
@@ -199,7 +198,6 @@ begin
 
      NOdes := 0;
      HashNodes := 0;
-     nColliz := 0;
 
 
      if GetEndSpiel(Board) then i := 8 else i := 6;
@@ -229,7 +227,7 @@ begin
    + ' pv ' + pv
    + ' hashfull ' + IntToStr(HashFullness)
    + ' string '+
-      'hash: ' + IntToStr(HashNodes) + ' colliz: '+IntToStr(nColliz));
+      'hash: ' + IntToStr(HashNodes));
    end;
 
 
