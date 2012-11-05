@@ -4,7 +4,7 @@ interface
 
   uses ChessTypes, Dialogs, SysUtils;
 
-const HASHSIZE = 3000000;
+const HASHSIZE = 30000000;
 
 type THashRecord=record
   RealHash: Int64;
@@ -21,8 +21,6 @@ function GetFigCount(var Board: TBoard): Byte;
 function Collizions: Cardinal;
 
 var HashTable: array[0..HASHSIZE] of THashRecord;
-
-  Killers: array[1..10, 1..2] of TMove;
 
 implementation
 
@@ -98,7 +96,7 @@ begin
    for j := 1 to 8 do
    begin
       Val := Val xor (Board.Cells[i, j]+6 + i*13 + j*13*8);
-      Shift := Board.Cells[i, j] + 7;
+      Shift := Board.Cells[i, j]+7;
       Val := (Val shl Shift) or (Val shr (64-Shift));
    end;
 

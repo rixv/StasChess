@@ -330,7 +330,7 @@ begin
 
       while (t <= 0) do
       begin
-       if (t < 0) then
+        if t < 0 then
         begin
           AddMove(Moves, i, j, a, b, abs(t)*100 - 2, #0);
           a := -1;
@@ -369,7 +369,7 @@ begin
 
       while (t <= 0) do
       begin
-        if (t < 0) then
+        if t < 0 then
         begin
           AddMove(Moves, i, j, a, b, abs(t)*100 - 4, #0);
           a := -1;
@@ -407,7 +407,7 @@ begin
 
       while (t <= 0) do
       begin
-        if (t < 0) then
+        if t < 0 then
         begin
           AddMove(Moves, i, j, a, b, abs(t)*100 - 5, #0);
           a := -1;
@@ -438,7 +438,7 @@ begin
         if (abs(a) <> abs(b)) and (a <> 0) and (b <> 0) then
         if ((a + i) in [1..8]) and ((b + j) in [1..8]) then
         if Board.Cells[i + a, j + b] <= 0 then
-        if (Board.Cells[i + a, j + b] < 0) then
+        if Board.Cells[i + a, j + b] < 0 then
           AddMove(Moves, i, j, i + a, j + b, 100*abs(Board.Cells[i + a, j + b]) - 2, #0)
         else
           AddMove(Moves, i, j, i + a, j + b, 6, #0);
@@ -517,7 +517,7 @@ begin
     if not ThreatTo(Board, 6, 1, True) then
     if (i = 5) and (j = 1) then
     begin
-      AddMove(Moves, i, j, i + 2, j, 11, #0);
+      AddMove(Moves, i, j, i + 2, j, 20, #0);
     end;
   end;
 
@@ -530,7 +530,7 @@ begin
     if not ThreatTo(Board, 2, 1, True) then
     if (i = 5) and (j = 1) then
     begin
-      AddMove(Moves, i, j, i - 2, j, 11, #0);
+      AddMove(Moves, i, j, i - 2, j, 6, #0);
     end;
   end;
 
@@ -546,7 +546,7 @@ begin
       else t := 1;
 
       if t < 0 then
-        AddMove(Moves, i, j, A, b, abs(t)*100 - 6, #0);
+        AddMove(Moves, i, j, A, b, abs(t) * 100 - 6, #0);
       if t = 0 then
         AddMove(Moves, i, j, a, B, 0, #0);
 

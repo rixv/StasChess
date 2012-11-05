@@ -43,9 +43,7 @@ begin
 
       if OnlyCaptures then
       begin
-         BestVal := Estimator(Board);
-         if BestVal > Alpha then
-         Alpha := BestVal;
+         Alpha := Estimator(Board);
       end;
 
       PMoves := PossibleMovesWhite(Board);
@@ -98,7 +96,7 @@ begin
 
 
 
-         if false and (HashTable[HashIndex].RealHash = Hash) and
+         if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -141,12 +139,7 @@ begin
     begin
       PMoves := PossibleMovesBlack(Board);
 
-      if OnlyCaptures then
-      begin
-        BestVal := Estimator(Board);
-        if BestVal < beta then
-          beta := BestVal;
-      end;
+      if OnlyCaptures then Beta := Estimator(Board);
 
       if PMoves.Count > 1 then
       begin
@@ -197,7 +190,7 @@ begin
           else
             rDepth := Depth - 1;
 
-        if false and (HashTable[HashIndex].RealHash = Hash) and
+        if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;

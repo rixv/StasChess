@@ -4,7 +4,7 @@ interface
 
   uses ChessTypes, Dialogs, SysUtils;
 
-const HASHSIZE = 3000000;
+const HASHSIZE = 30000000;
 
 type THashRecord=record
   RealHash: Int64;
@@ -21,8 +21,6 @@ function GetFigCount(var Board: TBoard): Byte;
 function Collizions: Cardinal;
 
 var HashTable: array[0..HASHSIZE] of THashRecord;
-
-  Killers: array[1..10, 1..2] of TMove;
 
 implementation
 
@@ -62,8 +60,17 @@ begin
     HashTable[i].Val := 0;
     HashTable[i].RealHash := 0;
     HashTable[i].Depth := 0;
+
   end;
 end;
+
+function Rol32(Value, Shift: LongInt): LongInt;
+asm
+  mov ecx, edx
+  rol eax, cl
+end;
+
+
 
 function GetFigCount(var Board: TBoard): Byte;
 var i, j: Integer;
@@ -87,6 +94,12 @@ begin
 
   Val := 9008;
 
+{  Val := Val xor Board.LastMove.ToX;
+  Val := Val xor Board.LastMove.ToY;
+  Val := Val xor Board.LastMove.FromX;
+  Val := Val xor Board.LastMove.FromY;
+193745}
+
   if Board.H1RookMoveW then Val := LongInt(Val) xor 1;
   if Board.A1RookMoveW then Val := LongInt(Val) xor 2;
   if Board.KingMoveW then Val := LongInt(Val) xor 4;
@@ -94,11 +107,13 @@ begin
   if Board.A1RookMoveB then Val := LongInt(Val) xor 16;
   if Board.KingMoveB then Val := LongInt(Val) xor 32;
 
+
+
    for i := 1 to 8 do
    for j := 1 to 8 do
    begin
       Val := Val xor (Board.Cells[i, j]+6 + i*13 + j*13*8);
-      Shift := Board.Cells[i, j] + 7;
+      Shift := Board.Cells[i, j]+7;
       Val := (Val shl Shift) or (Val shr (64-Shift));
    end;
 

@@ -41,13 +41,6 @@ begin
     If CMove then
     begin
 
-      if OnlyCaptures then
-      begin
-         BestVal := Estimator(Board);
-         if BestVal > Alpha then
-         Alpha := BestVal;
-      end;
-
       PMoves := PossibleMovesWhite(Board);
 
       if PMoves.Count > 1 then
@@ -98,7 +91,7 @@ begin
 
 
 
-         if false and (HashTable[HashIndex].RealHash = Hash) and
+         if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -141,12 +134,6 @@ begin
     begin
       PMoves := PossibleMovesBlack(Board);
 
-      if OnlyCaptures then
-      begin
-        BestVal := Estimator(Board);
-        if BestVal < beta then
-          beta := BestVal;
-      end;
 
       if PMoves.Count > 1 then
       begin
@@ -189,15 +176,12 @@ begin
           Hash := GetHash(CheckBoard);
           HashIndex := abs(Hash) mod HashSize;
 
-
-
-
           if (Depth = 1) and ThreatToKing(CheckBoard, True) then
             rDepth := Depth
           else
             rDepth := Depth - 1;
 
-        if false and (HashTable[HashIndex].RealHash = Hash) and
+        if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -307,7 +291,7 @@ begin
      AlphaBeta := 0;
      OffCuts := 0;
 
-     if GetEndSpiel(Board) then i := 7 else i := 6;
+     if GetEndSpiel(Board) then i := 8 else i := 7;
 
 //    i := 7;
 

@@ -12,9 +12,10 @@ implementation
 
 function Estimator(var BoardN: TBoard): Integer;
 var i, j: Integer; Fig: Integer; k: Integer;
-  BCnt: Word;
+BCnt: Word;
 begin
-  // Количество ходов
+
+//  Result := 0;
   Result := MoveCountWhite(BoardN)*3;
   BCnt := MoveCountBlack(BoardN)*3;
   Result := Result - Bcnt;
@@ -27,51 +28,40 @@ begin
 
     if (Fig = 1) or (Fig = -1) then
     begin
-      if (Fig = 1) then
+      if (BoardN.Cells[i, j] = 1) then
       for k := j + 1 to 6 do
       begin
         if BoardN.Cells[i, k] = 1 then Result := Result - 20;
       end;
 
-      if (Fig = -1) then
+      if (BoardN.Cells[i, j] = -1) then
       for k := j - 1 downto 3 do
       begin
         if BoardN.Cells[i, k] = -1 then Result := Result + 20;
       end;
 
-      if (Fig = 1) then
+      if (BoardN.Cells[i, j] = 1) then
         case j of
-          3: Result := Result + 3;
-          4: Result := Result + 20;
-          5: Result := Result + 30;
+          4: Result := Result + 10;
+          5: Result := Result + 20;
           6: Result := Result + 70;
           7: Result := Result + 150;
         end;
-      if (Fig = -1) then
+
+
+      if (BoardN.Cells[i, j] = -1) then
         case j of
-          6: Result := Result - 3;
-          5: Result := Result - 20;
-          4: Result := Result - 30;
+          5: Result := Result - 10;
+          4: Result := Result - 20;
           3: Result := Result - 70;
           2: Result := Result - 150;
         end;
 
+
     end;
 
-    if (Fig = -2) then
-      if (i in [3..6]) and (j in [3..6]) then
-      begin
-        Result := Result - 30;
-      end;
-
-    if (Fig = 2) then
-      if (i in [3..6]) and (j in [3..6]) then
-      begin
-        Result := Result + 30;
-      end;
-
-
     case Fig of
+
       1: Result := Result + 99;
      -1: Result := Result - 99;
       6: Result := Result + 50000;
@@ -88,6 +78,16 @@ begin
 
 
   end;
+
+{
+  Result := Result + BoardN.Cells[5, 4]*2;
+  Result := Result + BoardN.Cells[4, 4]*2;
+
+  Result := Result + BoardN.Cells[5, 5]*2;
+  Result := Result + BoardN.Cells[4, 5]*2;;
+}
+
+ //result := result + random(4);
 
 end;
 

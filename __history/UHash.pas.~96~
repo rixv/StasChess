@@ -4,7 +4,7 @@ interface
 
   uses ChessTypes, Dialogs, SysUtils;
 
-const HASHSIZE = 3000000;
+const HASHSIZE = 30;
 
 type THashRecord=record
   RealHash: Int64;

@@ -14,11 +14,9 @@ function Estimator(var BoardN: TBoard): Integer;
 var i, j: Integer; Fig: Integer; k: Integer;
   BCnt: Word;
 begin
-  // Количество ходов
   Result := MoveCountWhite(BoardN)*3;
   BCnt := MoveCountBlack(BoardN)*3;
   Result := Result - Bcnt;
-
 
   for i := 1 to 8 do
   for j := 1 to 8 do
@@ -69,6 +67,8 @@ begin
       begin
         Result := Result + 30;
       end;
+
+
 
 
     case Fig of

@@ -45,7 +45,7 @@ begin
       begin
          BestVal := Estimator(Board);
          if BestVal > Alpha then
-         Alpha := BestVal;
+         Alpha := bestval;
       end;
 
       PMoves := PossibleMovesWhite(Board);

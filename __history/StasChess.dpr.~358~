@@ -45,7 +45,7 @@ begin
       begin
          BestVal := Estimator(Board);
          if BestVal > Alpha then
-         Alpha := BestVal;
+         Alpha := bestval;
       end;
 
       PMoves := PossibleMovesWhite(Board);
@@ -98,7 +98,7 @@ begin
 
 
 
-         if false and (HashTable[HashIndex].RealHash = Hash) and
+         if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -197,7 +197,7 @@ begin
           else
             rDepth := Depth - 1;
 
-        if false and (HashTable[HashIndex].RealHash = Hash) and
+        if (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;

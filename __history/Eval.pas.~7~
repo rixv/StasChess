@@ -14,11 +14,9 @@ function Estimator(var BoardN: TBoard): Integer;
 var i, j: Integer; Fig: Integer; k: Integer;
   BCnt: Word;
 begin
-  // Количество ходов
   Result := MoveCountWhite(BoardN)*3;
   BCnt := MoveCountBlack(BoardN)*3;
   Result := Result - Bcnt;
-
 
   for i := 1 to 8 do
   for j := 1 to 8 do
@@ -27,19 +25,19 @@ begin
 
     if (Fig = 1) or (Fig = -1) then
     begin
-      if (Fig = 1) then
+      if (BoardN.Cells[i, j] = 1) then
       for k := j + 1 to 6 do
       begin
         if BoardN.Cells[i, k] = 1 then Result := Result - 20;
       end;
 
-      if (Fig = -1) then
+      if (BoardN.Cells[i, j] = -1) then
       for k := j - 1 downto 3 do
       begin
         if BoardN.Cells[i, k] = -1 then Result := Result + 20;
       end;
 
-      if (Fig = 1) then
+      if (BoardN.Cells[i, j] = 1) then
         case j of
           3: Result := Result + 3;
           4: Result := Result + 20;
@@ -47,7 +45,7 @@ begin
           6: Result := Result + 70;
           7: Result := Result + 150;
         end;
-      if (Fig = -1) then
+      if (BoardN.Cells[i, j] = -1) then
         case j of
           6: Result := Result - 3;
           5: Result := Result - 20;
@@ -56,22 +54,26 @@ begin
           2: Result := Result - 150;
         end;
 
+
     end;
 
-    if (Fig = -2) then
-      if (i in [3..6]) and (j in [3..6]) then
+    if (BoardN.Cells[i, j] = -2) then
+      if (i in [2..6]) and (j in [2..6]) then
       begin
         Result := Result - 30;
       end;
 
-    if (Fig = 2) then
-      if (i in [3..6]) and (j in [3..6]) then
+    if (BoardN.Cells[i, j] = 2) then
+      if (i in [2..6]) and (j in [2..6]) then
       begin
         Result := Result + 30;
       end;
 
 
+
+
     case Fig of
+
       1: Result := Result + 99;
      -1: Result := Result - 99;
       6: Result := Result + 50000;
