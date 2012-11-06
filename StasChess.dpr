@@ -271,14 +271,12 @@ var
   n, NullCount: Integer;
   s, SMoves: String;
   SL: TStringList;
-  IsBlack: Boolean;
   Pv:String;
   iPv: TPVMoves;
 begin
   ClearHash;
   Nodes := 0;
   randomize;
-  IsBlack := False;
   SL := TStringList.Create;
   SetupInput;
   WriteString('; ' + 'StasChess' + ' - Winboard/UCI chess engine');

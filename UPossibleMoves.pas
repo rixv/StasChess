@@ -612,7 +612,7 @@ end;
 
 
 function PossibleMovesBlack(var Board: TBoard): TMoves;
-var i, j: Integer; InvBoard: TBoard; B: Boolean;
+var i, j: Integer; InvBoard: TBoard;
 begin
   for i := 1 to 8 do
   for j := 1 to 8 do
