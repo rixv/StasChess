@@ -105,6 +105,7 @@ begin
              if not OnlyCaptures then
              begin
                 CapVal := Estimator(Board);
+                inc(Nodes);
                 if CapVal > Alpha then
                   Val := MinMax(CheckBoard, 1, CapVal, Beta, Pv, not CMove, True).Eval
                 else
@@ -202,6 +203,7 @@ begin
              if not OnlyCaptures then
              begin
                CapVal := Estimator(Board);
+                inc(Nodes);
              if CapVal < Beta then
                Val := MinMax(CheckBoard, 1, Alpha, CapVal, Pv, not CMove, True).Eval
              else
@@ -308,7 +310,7 @@ begin
 
   //   if GetEndSpiel(Board) then i := 8 else i := 7;
 
-     if Nodes > 1000000 then i := 6 else i := 7;
+     if Nodes > 100000 then i := 6 else i := 7;
      if (Nodes < 10000) and (Nodes > 100) then i := 8;
 
 

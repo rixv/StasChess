@@ -1,0 +1,7 @@
+__history
+*.dcu
+*.exe
+*.cfg
+*.skincfg
+*.identcache
+*.local
