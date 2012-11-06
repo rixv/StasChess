@@ -49,7 +49,7 @@ begin
         end;
       if (Fig = -1) then
         case j of
-          6: Result := Result - 7;
+          6: Result := Result - 3;
           5: Result := Result - 20;
           4: Result := Result - 30;
           3: Result := Result - 70;

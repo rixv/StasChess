@@ -26,12 +26,13 @@ end;
 
 
 function MinMax(Board: TBoard; Depth, Alpha, Beta: Integer; var Pv: TPVMoves; CMove, OnlyCaptures: Boolean): TMove;
-var PMoves: TMoves; i, Val, BestVal: Integer; CheckBoard: TBoard;
+var PMoves: TMoves; i, Val, BestVal, CapVal: Integer; CheckBoard: TBoard;
   Hash: Int64;  rDepth, BestMoveIndex: Byte; HashIndex: Cardinal;
 begin
 
   BestMoveIndex := 1;
-  BestVal := -1111;
+  BestVal := -8000;
+
 
     if (Nodes <> 0) and ((Nodes mod 400000) = 0) then
       Relax;
@@ -40,13 +41,6 @@ begin
     begin
     If CMove then
     begin
-
-      if OnlyCaptures then
-      begin
-         BestVal := Estimator(Board);
-         if BestVal > Alpha then
-         Alpha := bestval;
-      end;
 
       PMoves := PossibleMovesWhite(Board);
 
@@ -87,8 +81,8 @@ begin
           if OnlyCaptures and (PMoves.Move[i].Sort < 30) then Continue;
 
           CheckBoard := DoMove(Board, PMoves.Move[i]);
-          Hash := GetHash(CheckBoard);
-          HashIndex := abs(Hash) mod HashSize;
+         // Hash := GetHash(CheckBoard);
+        //  HashIndex := abs(Hash) mod HashSize;
 
 
           if (Depth = 1) and ThreatToKing(CheckBoard, False) then
@@ -98,7 +92,7 @@ begin
 
 
 
-         if (HashTable[HashIndex].RealHash = Hash) and
+         if false and (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -108,9 +102,17 @@ begin
          begin
            if (rDepth = 0) and (PMoves.Move[i].Sort > 30) then
            begin
-             rDepth := 1;
-             OnlyCaptures := True;
-           end;
+             if not OnlyCaptures then
+             begin
+                CapVal := Estimator(Board);
+                if CapVal > Alpha then
+                  Val := MinMax(CheckBoard, 1, CapVal, Beta, Pv, not CMove, True).Eval
+                else
+                  Val := MinMax(CheckBoard, 1, Alpha, Beta, Pv, not CMove, True).Eval;
+                OnlyCaptures := True;
+             end else
+                Val := MinMax(CheckBoard, 1, Alpha, Beta, Pv, not CMove, True).Eval;
+           end else
            Val := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove, OnlyCaptures).Eval;
          end;
 
@@ -118,9 +120,9 @@ begin
           begin
             if rDepth > 1 then
             begin
-              HashTable[HashIndex].Val := Val;
-              HashTable[HashIndex].Depth := rDepth;
-              HashTable[HashIndex].RealHash := Hash;
+           //   HashTable[HashIndex].Val := Val;
+           //   HashTable[HashIndex].Depth := rDepth;
+           //   HashTable[HashIndex].RealHash := Hash;
             end;
 
             Alpha := Val;
@@ -140,13 +142,6 @@ begin
     else
     begin
       PMoves := PossibleMovesBlack(Board);
-
-      if OnlyCaptures then
-      begin
-        BestVal := Estimator(Board);
-        if BestVal < beta then
-          beta := BestVal;
-      end;
 
       if PMoves.Count > 1 then
       begin
@@ -186,18 +181,15 @@ begin
           if OnlyCaptures and (PMoves.Move[i].Sort < 30) then Continue;
 
           CheckBoard := DoMove(Board, PMoves.Move[i]);
-          Hash := GetHash(CheckBoard);
-          HashIndex := abs(Hash) mod HashSize;
-
-
-
+        //  Hash := GetHash(CheckBoard);
+        //  HashIndex := abs(Hash) mod HashSize;
 
           if (Depth = 1) and ThreatToKing(CheckBoard, True) then
             rDepth := Depth
           else
             rDepth := Depth - 1;
 
-        if (HashTable[HashIndex].RealHash = Hash) and
+        if false and (HashTable[HashIndex].RealHash = Hash) and
          (HashTable[HashIndex].Depth >= rDepth)  then
          begin
            Val := HashTable[HashIndex].Val;
@@ -207,20 +199,26 @@ begin
          begin
            if (rDepth = 0) and (PMoves.Move[i].Sort > 30) then
            begin
-             rDepth := 1;
-             OnlyCaptures := True;
-           end;
-
-           Val := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove, OnlyCaptures).Eval;
+             if not OnlyCaptures then
+             begin
+               CapVal := Estimator(Board);
+             if CapVal < Beta then
+               Val := MinMax(CheckBoard, 1, Alpha, CapVal, Pv, not CMove, True).Eval
+             else
+               Val := MinMax(CheckBoard, 1, Alpha, Beta, Pv, not CMove, True).Eval;
+             end else
+                Val := MinMax(CheckBoard, 1, Alpha, Beta, Pv, not CMove, True).Eval;
+           end else
+             Val := MinMax(CheckBoard, rDepth, Alpha, Beta, Pv, not CMove, OnlyCaptures).Eval;
          end;
 
           if Val < Beta then
           begin
             if rDepth > 1 then
             begin
-              HashTable[HashIndex].Val := Val;
-              HashTable[HashIndex].Depth := rDepth;
-              HashTable[HashIndex].RealHash := Hash;
+         //     HashTable[HashIndex].Val := Val;
+        //      HashTable[HashIndex].Depth := rDepth;
+         //     HashTable[HashIndex].RealHash := Hash;
             end;
 
             Beta := Val;
@@ -239,14 +237,20 @@ begin
       end;
     end;
 
-   if PMoves.Count > 0 then
+   if (PMoves.Count > 0) then
    begin
      Result := PMoves.Move[BestMoveIndex];
      Pv.Depth := Depth;
      Pv.Moves[Depth] := MoveToEasyMove(Result);
    end;
-  end else
 
+  if ((BestVal = -8000) and OnlyCaptures) then
+  begin
+    BestVal := Estimator(Board);
+    inc(Nodes);
+  end;
+
+  end else
   begin
     BestVal := Estimator(Board);
     inc(Nodes);
@@ -307,7 +311,7 @@ begin
      AlphaBeta := 0;
      OffCuts := 0;
 
-     if GetEndSpiel(Board) then i := 7 else i := 6;
+     if GetEndSpiel(Board) then i := 8 else i := 7;
 
 //    i := 7;
 

@@ -710,7 +710,7 @@ begin
       case Board.Cells[i, j] of
         1: Result := Result + PieceMoveCount(Board, i, j);
         2: Result := Result + KnightMoveCount(Board, i, j)*4;
-        3: Result := Result + BishopMoveCount(Board, i, j)*2;
+        3: Result := Result + BishopMoveCount(Board, i, j)*3;
         4: Result := Result + RookMoveCount(Board, i, j);
         5: Result := Result + QueenMoveCount(Board, i, j);
       end;
